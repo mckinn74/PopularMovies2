@@ -11,8 +11,9 @@ import java.util.Scanner;
 
 public class MovieDBUtils {
 
-    final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/popular?api_key=";
-    final static String API_KEY = "API_Key";//request an actual API_KEY from movieDB
+    final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/popular?";
+
+    final static String API_KEY = "";//request an actual API_KEY from movieDB
     final static String POPULAR = "popular";
     final static String HIGHEST_RATED = "highest_rated";
 
