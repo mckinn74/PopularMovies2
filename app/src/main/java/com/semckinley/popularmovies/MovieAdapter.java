@@ -12,10 +12,11 @@ import com.squareup.picasso.Picasso;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
    private int mNumberMovies;
-
+    private String [] mPosterPath;
     private int movieCount;
-   public MovieAdapter(int numberOfItems){
-       mNumberMovies = numberOfItems;
+   public MovieAdapter(String[] posterPath){
+      mPosterPath = posterPath;
+
 
    }
 
@@ -35,7 +36,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
    @Override
    public void onBindViewHolder(MovieViewHolder holder, int position){
        holder.bind(position);
-       Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(holder.listMovieNumberView);
+       for (int i = 0; i< mPosterPath.length; i++) {
+           String path = mPosterPath[i];
+           Picasso.get().load("http://i.imgur.com" + path).into(holder.listMovieNumberView);
+       }
    }
     public int getItemCount(){
         return mNumberMovies;
@@ -53,4 +57,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 //listMovieNumberView.setText(String.valueOf(movieIndex));
             }
         }
+        public void setmPosterPath(String[] posterPath){this.mPosterPath = posterPath;}
 }

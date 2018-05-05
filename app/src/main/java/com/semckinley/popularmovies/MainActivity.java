@@ -1,10 +1,12 @@
 package com.semckinley.popularmovies;
 
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.semckinley.popularmovies.Utilities.JSONUtils;
@@ -19,7 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
         private MovieAdapter mAdapter;
         private RecyclerView mMovieList;
-        public String movieResults;
+        public String mMovieResults;
+        public String [] mPosterPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,16 +31,17 @@ public class MainActivity extends AppCompatActivity {
         mMovieList = (RecyclerView) findViewById(R.id.rv_movies);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL,false );
         mMovieList.setLayoutManager(layoutManager);
-        mMovieList.setHasFixedSize(true);
-        mAdapter = new MovieAdapter(10);
-        mMovieList.setAdapter(mAdapter);
         makeMovieDBSearch();
-        String [] poster_paths = JSONUtils.parseMovieJSON(movieResults);
+        mMovieList.setHasFixedSize(false);
+        mAdapter = new MovieAdapter(mPosterPath);
+        mMovieList.setAdapter(mAdapter);
+
+
     }
 
     private void makeMovieDBSearch(){
         URL movieSearchUrl = MovieDBUtils.buildUrl();
-         new MovieDBQueryTask().execute(movieSearchUrl);
+        new MovieDBQueryTask().execute(movieSearchUrl);
 
 
 
@@ -48,13 +52,21 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(URL... params){
 
             URL searchUrl = params[0];
-             movieResults = null;
+             mMovieResults = null;
             try{
-                movieResults =MovieDBUtils.getResponseFromHttpUrl(searchUrl);
+                mMovieResults =MovieDBUtils.getResponseFromHttpUrl(searchUrl);
             }catch(IOException e){
                 e.printStackTrace();
             }
-            return movieResults;
+
+            return mMovieResults;
+        }
+
+        protected void onPostExecute(String mMovieResults){
+            mPosterPath = JSONUtils.parseMovieJSON(mMovieResults);
+            mAdapter.setmPosterPath(mPosterPath);
+            mAdapter.notifyDataSetChanged();
+
         }
     }
 }
