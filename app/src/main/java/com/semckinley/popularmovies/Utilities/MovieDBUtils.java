@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class MovieDBUtils {
 
-    final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/popular?api_key=2b9f9bc0639a1020bda5e4042f38f598&language=en-US&page=1";
+    final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/popular?api_key=&language=en-US&page=1";
 
     final static String API_KEY = "api_key={}";//request an actual API_KEY from movieDB
     final static String POPULAR = "popular?";
