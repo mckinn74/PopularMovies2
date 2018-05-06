@@ -1,6 +1,8 @@
 package com.semckinley.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,18 +11,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.semckinley.popularmovies.sampledata.MovieData;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
    private int mNumberMovies;
-    private String [] mPosterPath;
+    private String [] mPosterPath = new String[20];
     private int movieCount;
     static Context mContext;
+    ArrayList<MovieData> mMovieDataList;
+
+
+
    public MovieAdapter(int movieCount){
-      //mPosterPath = posterPath;
-    //mContext = context;
+
     mNumberMovies = movieCount;
-    Log.d("MovieAdapter","Adapter Constructor Run" );
+
 
    }
 
@@ -49,6 +57,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
        }
        else{
+
            String path = mPosterPath[position];
            Picasso.get().load("http://image.tmdb.org/t/p/w185/" + path).into(holder.listMovieNumberView);
        }
@@ -59,17 +68,37 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
        return mNumberMovies;
     }
 
-        class MovieViewHolder extends RecyclerView.ViewHolder  {
+
+
+    class MovieViewHolder extends RecyclerView.ViewHolder  {
         ImageView listMovieNumberView;
 
             public MovieViewHolder(View itemView){
                 super(itemView);
                 listMovieNumberView = (ImageView) itemView.findViewById(R.id.iv_movie_item);
-
+                listMovieNumberView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int adapterPosition = getAdapterPosition();
+                        Context context = v.getContext();
+                        Bundle b = new Bundle();
+                        String key = "movieInfo";
+                        b.putStringArray(key, mPosterPath);
+                        Intent intent = new Intent(context, DetailActivity.class);
+                        intent.putExtras(b);
+                        intent.putExtra("adapterPosition", adapterPosition);
+                        context.startActivity(intent);
+                    }
+                });
             }
+
             void bind(int movieIndex){
                 //listMovieNumberView.setText(String.valueOf(movieIndex));
             }
         }
-        public void setmPosterPath(String[] posterPath){this.mPosterPath = posterPath;}
+        public void setmPosterPath(ArrayList<MovieData> movieDataList){
+       this.mMovieDataList = movieDataList;
+            for (int j = 0; j < mMovieDataList.size(); j++){
+                mPosterPath[j]= mMovieDataList.get(j).getPath();
+            }}
 }

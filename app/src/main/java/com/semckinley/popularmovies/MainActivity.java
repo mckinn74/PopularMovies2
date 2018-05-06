@@ -8,13 +8,18 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.semckinley.popularmovies.Utilities.JSONUtils;
 import com.semckinley.popularmovies.Utilities.MovieDBUtils;
+import com.semckinley.popularmovies.sampledata.MovieData;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.semckinley.popularmovies.Utilities.MovieDBUtils.getResponseFromHttpUrl;
 
@@ -23,11 +28,16 @@ public class MainActivity extends AppCompatActivity {
         private MovieAdapter mAdapter;
         private RecyclerView mMovieList;
         public String mMovieResults;
-        public String [] mPosterPath = {"/Dvpvk1r.png"};
+        private ProgressBar mLoading;
+        public String [] mPosterPath = new String[20];
+
+        public ArrayList<MovieData> mMovieDataList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mLoading = (ProgressBar) findViewById(R.id.pb_loading);
         //Context context = MainActivity.this;
         mMovieList = (RecyclerView) findViewById(R.id.rv_movies);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL,false );
@@ -54,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
     public class MovieDBQueryTask extends AsyncTask<URL, Void, String> {
 
         @Override
+        protected void onPreExecute (){
+            super.onPreExecute();
+            mLoading.setVisibility(View.VISIBLE);
+        }
+        @Override
         protected String doInBackground(URL... params){
 
             URL searchUrl = params[0];
@@ -68,10 +83,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String mMovieResults){
-            mPosterPath = JSONUtils.parseMovieJSON(mMovieResults);
+            mLoading.setVisibility(View.INVISIBLE);
+            mMovieDataList = JSONUtils.parseMovieJSON(mMovieResults);
 
 
-            mAdapter.setmPosterPath(mPosterPath);
+
+            mAdapter.setmPosterPath(mMovieDataList);
             mAdapter.notifyDataSetChanged();
 
         }
