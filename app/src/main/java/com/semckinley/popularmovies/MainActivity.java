@@ -1,11 +1,14 @@
 package com.semckinley.popularmovies;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,9 +28,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static com.semckinley.popularmovies.Utilities.MovieDBUtils.getResponseFromHttpUrl;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
         private MovieAdapter mAdapter;
         private RecyclerView mMovieList;
@@ -60,21 +64,50 @@ public class MainActivity extends AppCompatActivity {
         makeMovieDBSearch();
 
 
-    }@Override
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_menu, menu);
         return true;
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+        if(id==R.id.search_settings){
+            Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
+            startActivity(startSettingsActivity);
+            return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
     private void makeMovieDBSearch(){
-        URL movieSearchUrl = MovieDBUtils.buildUrl();
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
+        boolean popular = sharedPreferences.getBoolean("search_option", false);
+        URL movieSearchUrl = MovieDBUtils.buildUrl(popular);
         new MovieDBQueryTask().execute(movieSearchUrl);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
 
 
     }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if(s.equals(getString(R.string.search_option))){
+            makeMovieDBSearch();
+        }
+    }
+
     public class MovieDBQueryTask extends AsyncTask<URL, Void, String> {
 
         @Override

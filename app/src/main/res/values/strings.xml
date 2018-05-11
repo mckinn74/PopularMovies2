@@ -5,4 +5,11 @@
     <string name="rating">THIS RATING THIS MOVIE GOT</string>
     <string name="release">THIS IS WHEN THE MOVIE CAME OUT</string>
     <string name="search_settings">Search Settings</string>
+    <string name="root_title">Preferences</string>
+    <string name="detail_activity">MOVIE DETAIL</string>
+    <string name="Search_highest">Search Highest Rated</string>
+    <string name="search_option">search_option</string>
+    <string name="release_date">Release Date</string>
+    <string name="vote_average">Average Vote</string>
+
 </resources>

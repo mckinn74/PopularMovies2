@@ -80,13 +80,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     @Override
                     public void onClick(View v) {
                         int adapterPosition = getAdapterPosition();
+                        MovieData movie =mMovieDataList.get(adapterPosition);
                         Context context = v.getContext();
-                        Bundle b = new Bundle();
-                        String key = "movieInfo";
-                        b.putStringArray(key, mPosterPath);
+                        //Bundle b = new Bundle();
+                        //String key = "movieInfo";
+                        //b.putStringArray(key, mPosterPath);
                         Intent intent = new Intent(context, DetailActivity.class);
-                        intent.putExtras(b);
-                        intent.putExtra("adapterPosition", adapterPosition);
+                        intent.putExtra("movieInfo", movie);
+                        //intent.putExtra("adapterPosition", adapterPosition);
                         context.startActivity(intent);
                     }
                 });

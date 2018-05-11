@@ -1,6 +1,8 @@
 package com.semckinley.popularmovies.sampledata;
 
-public class MovieData {
+import java.io.Serializable;
+
+public class MovieData implements Serializable  {
 
     String name;
     String rating;
