@@ -11,18 +11,18 @@ import java.util.Scanner;
 
 public class MovieDBUtils {
 
-    final static String MOVIE_DB_BASE_URL_POPULAR= "http://api.themoviedb.org/3/movie/popular?api_key=&language=en-US&page=1";
-    final static String MOVIE_DB_URL_HIGHEST_RATED = "http://api.themoviedb.org/3/movie/top_rated?api_key=&language=en-US&page=1";
-    //final static String API_KEY = "api_key={}";//request an actual API_KEY from movieDB
-    //final static String POPULAR = "popular?";
-    //final static String HIGHEST_RATED = "highest_rated?";
+     final static String API_KEY = "api_key="; //add requested API_KEY from themovieDB here
+    final static String POPULAR = "popular?";
+    final static String HIGHEST_RATED = "top_rated?";
+    final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
+    final static String END_STRING ="&language=en-US&page=1";
 
     public static URL buildUrl (boolean rating){
         Uri builtUri;
         if(rating==true){
-         builtUri = Uri.parse(MOVIE_DB_URL_HIGHEST_RATED).buildUpon()
+         builtUri = Uri.parse(MOVIE_DB_BASE_URL + HIGHEST_RATED + API_KEY +END_STRING).buildUpon()
                 .build();}
-               else{ builtUri = Uri.parse(MOVIE_DB_BASE_URL_POPULAR).buildUpon()
+               else{ builtUri = Uri.parse(MOVIE_DB_BASE_URL + POPULAR + API_KEY +END_STRING).buildUpon()
                 .build();}
         URL url = null;
         try{
