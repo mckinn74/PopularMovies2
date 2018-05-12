@@ -1,4 +1,4 @@
-package com.semckinley.popularmovies.Utilities;
+package com.semckinley.popularmovies.utilities;
 
 import android.net.Uri;
 

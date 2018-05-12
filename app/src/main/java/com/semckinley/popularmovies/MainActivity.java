@@ -1,9 +1,7 @@
 package com.semckinley.popularmovies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,17 +16,15 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.semckinley.popularmovies.Utilities.JSONUtils;
-import com.semckinley.popularmovies.Utilities.MovieDBUtils;
+import com.semckinley.popularmovies.utilities.JSONUtils;
+import com.semckinley.popularmovies.utilities.MovieDBUtils;
 import com.semckinley.popularmovies.sampledata.MovieData;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
-import static com.semckinley.popularmovies.Utilities.MovieDBUtils.getResponseFromHttpUrl;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
 
@@ -38,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         public String mMovieResults;
         private ProgressBar mLoading;
         public String [] mPosterPath = new String[20];
+        private TextView mErrorMessage;
 
         public ArrayList<MovieData> mMovieDataList;
     @Override
@@ -48,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (actionBar !=null){
             actionBar.setDisplayUseLogoEnabled(true);
         }
-
+        mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
         mLoading = (ProgressBar) findViewById(R.id.pb_loading);
         //Context context = MainActivity.this;
         mMovieList = (RecyclerView) findViewById(R.id.rv_movies);
@@ -131,13 +127,20 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         protected void onPostExecute(String mMovieResults){
             mLoading.setVisibility(View.INVISIBLE);
+            if(mMovieResults == null)
+            {
+                mErrorMessage.setVisibility(View.VISIBLE);
+                mMovieList.setVisibility(View.GONE);
+
+            } else{
+
             mMovieDataList = JSONUtils.parseMovieJSON(mMovieResults);
-
-
+            mErrorMessage.setVisibility(View.INVISIBLE);
+            mMovieList.setVisibility(View.VISIBLE);
 
             mAdapter.setmPosterPath(mMovieDataList);
             mAdapter.notifyDataSetChanged();
 
-        }
+        }}
     }
 }

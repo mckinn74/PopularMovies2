@@ -11,5 +11,6 @@
     <string name="search_option">search_option</string>
     <string name="release_date">Release Date</string>
     <string name="vote_average">Average Vote</string>
+    <string name="error_message">Error. No Results. Check Connection</string>
 
 </resources>
