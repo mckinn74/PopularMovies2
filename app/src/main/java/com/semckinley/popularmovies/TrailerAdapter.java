@@ -8,22 +8,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
+import com.semckinley.popularmovies.sampledata.MovieData;
 
 import java.util.ArrayList;
 
+/**
+ * Created by stephen.mckinley on 5/19/18.
+ */
 
 
-
-
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import com.semckinley.popularmovies.sampledata.TrailerData;
+import com.squareup.picasso.Picasso;
 
-
-
+import java.util.ArrayList;
 
     public class TrailerAdapter extends RecyclerView.Adapter<com.semckinley.popularmovies.TrailerAdapter.TrailerViewHolder> {
         private int mNumberTrailers;
