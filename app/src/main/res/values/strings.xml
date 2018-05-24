@@ -12,5 +12,6 @@
     <string name="release_date">Release Date</string>
     <string name="vote_average">Average Vote</string>
     <string name="error_message">Error. No Results. Check Connection</string>
+    <string name="trailer">Trailer</string>
 
 </resources>

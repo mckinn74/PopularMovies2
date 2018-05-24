@@ -2,6 +2,8 @@ package com.semckinley.popularmovies.utilities;
 
 import android.net.Uri;
 
+import com.semckinley.popularmovies.sampledata.MovieFavoriteContract;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -11,11 +13,12 @@ import java.util.Scanner;
 
 public class MovieDBUtils {
 
-     final static String API_KEY = "api_key="; //add requested API_KEY from themovieDB here
+     final static String API_KEY = "api_key=2b9f9bc0639a1020bda5e4042f38f598"; //add requested API_KEY from themovieDB here
     final static String POPULAR = "popular?";
     final static String HIGHEST_RATED = "top_rated?";
     final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
     final static String END_STRING ="&language=en-US&page=1";
+    final static String VIDEOS="/videos?";
 
     public static URL buildUrl (boolean rating){
         Uri builtUri;
@@ -32,6 +35,22 @@ public class MovieDBUtils {
         }
         return url;
     }
+
+    public static URL trailerBuildUrl (String id){
+        Uri builtUri;
+
+            builtUri = Uri.parse(MOVIE_DB_BASE_URL + "253412" + VIDEOS + API_KEY).buildUpon()
+                    .build();
+
+        URL url = null;
+        try{
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e){
+            e.printStackTrace();
+        }
+        return url;
+    }
+
 
     public static String getResponseFromHttpUrl (URL url) throws IOException{
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

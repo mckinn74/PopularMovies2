@@ -9,6 +9,7 @@ public class MovieData implements Serializable  {
     String path;
     String plot;
     String release;
+    String id;
 
     public MovieData(){
 
@@ -24,6 +25,7 @@ public class MovieData implements Serializable  {
     public void setPath(String path){this.path = path;}
     public void setPlot(String plot){this.plot =plot;}
     public void setRelease(String release){this.release = release;}
+    public void setId(String id){this.id= id;}
 
 
     public String getName() { return this.name; }
@@ -31,5 +33,6 @@ public class MovieData implements Serializable  {
     public String getPlot() { return this.plot; }
     public String getPath(){ return this.path; }
     public String getRelease() { return this.release; }
+    public String getId(){return this.id;}
 
 }
