@@ -1,6 +1,8 @@
 package com.semckinley.popularmovies;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,17 +50,18 @@ import java.util.ArrayList;
             mNumberTrailers = trailerCount;
 
 
+
         }
 
         @Override
         public TrailerViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
-            Context context = viewGroup.getContext();
+            mContext = viewGroup.getContext();
             Log.d("onCreateViewHolder", "onCreateViewHolder Started");
             int layoutIdForTrailerItem = R.layout.trailer_list;
-            LayoutInflater inflater = LayoutInflater.from(context);
+            LayoutInflater inflater = LayoutInflater.from(mContext);
             boolean shouldAttachToParentImmediately = false;
             View view = inflater.inflate(layoutIdForTrailerItem, viewGroup, shouldAttachToParentImmediately);
-            TrailerAdapter.TrailerViewHolder viewHolder = new TrailerAdapter.TrailerViewHolder(view);
+            TrailerViewHolder viewHolder = new TrailerViewHolder(view);
 
             return viewHolder;
 
@@ -66,12 +69,20 @@ import java.util.ArrayList;
 
         @Override
         public void onBindViewHolder(@NonNull TrailerAdapter.TrailerViewHolder holder, int position) {
-        holder.listTrailerView.setText("This is Filler");
+        holder.bind(position);
+        if(mTrailerList == null){
+            holder.listTrailerView.setText(R.string.no_trailer);
+        }
+        else {
+            holder.listTrailerView.setText(mTrailerList.get(position).getName());
+
+            }Log.d("onBindViewHolder", "onBindViewHolder"+ position);
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            if(mTrailerList !=null){return mTrailerList.size();}
+            return 1;
         }
 
 class TrailerViewHolder extends RecyclerView.ViewHolder  {
@@ -80,26 +91,34 @@ class TrailerViewHolder extends RecyclerView.ViewHolder  {
     public TrailerViewHolder(View itemView){
         super(itemView);
         listTrailerView = (Button) itemView.findViewById(R.id.bt_trailer_list);
-       /* listTrailerView.setOnClickListener(new View.OnClickListener() {
+       listTrailerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int adapterPosition = getAdapterPosition();
-                MovieData movie =mMovieDataList.get(adapterPosition);
-                Context context = v.getContext();
-                //Bundle b = new Bundle();
-                //String key = "movieInfo";
-                //b.putStringArray(key, mPosterPath);
-                Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra("movieInfo", movie);
-                //intent.putExtra("adapterPosition", adapterPosition);
-                context.startActivity(intent);
+
+                TrailerData trailer =mTrailerList.get(adapterPosition);
+                String key = trailer.getKey();
+                String url = "http://youtube.com/watch?v=" + key;
+                Uri webpage = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+                if(intent.resolveActivity(mContext.getPackageManager()) != null){
+                    mContext.startActivity(intent);
+                }
+
+
+
             }
-        });*/
+        });
     }
 
+
     void bind(int movieIndex){
-        //listMovieNumberView.setText(String.valueOf(movieIndex));
+
     }
 }
+
+        public void setmTrailerPath(ArrayList<TrailerData> trailerList){
+            this.mTrailerList = trailerList;
+           }
 
 }

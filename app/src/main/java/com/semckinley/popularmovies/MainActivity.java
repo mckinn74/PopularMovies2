@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
         mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
         mLoading = (ProgressBar) findViewById(R.id.pb_loading);
-        //Context context = MainActivity.this;
+
         mMovieList = (RecyclerView) findViewById(R.id.rv_movies);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL,false );
         mMovieList.setLayoutManager(layoutManager);

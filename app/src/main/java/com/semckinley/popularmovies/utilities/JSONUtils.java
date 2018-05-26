@@ -38,7 +38,7 @@ public class JSONUtils {
                movieData.setName(movieInfo.getString(MDB_TITLE));
                movieData.setPlot(movieInfo.getString(MDB_SYNOPSIS));
                movieData.setRelease(movieInfo.getString(MDB_RELEASE));
-               movieData.setId(MDB_ID);
+               movieData.setId(movieInfo.getString(MDB_ID));
                mMovieList.add(movieData);
                parsedMoviePathData[i] = path;
            }
@@ -48,7 +48,7 @@ public class JSONUtils {
         return mMovieList;
     }
 
-    public static TrailerData parseTrailerJSON (String jsonTrailer){
+    public static ArrayList<TrailerData> parseTrailerJSON (String jsonTrailer){
         String [] parsedTrailerData = null;
         final String TDB_RESULTS = "results";
         final String TDB_SITE = "site";
@@ -83,6 +83,6 @@ public class JSONUtils {
             e.printStackTrace();
         }
 
-        return null;
+        return mTrailerList;
     }
 }

@@ -3,6 +3,7 @@ package com.semckinley.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.semckinley.popularmovies.sampledata.MovieData;
 import com.semckinley.popularmovies.sampledata.TrailerData;
@@ -22,6 +24,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -33,16 +36,25 @@ public class DetailActivity extends AppCompatActivity {
     private ImageView mPoster;
     private RecyclerView mTrailer;
     private TrailerAdapter mAdapter;
-    private String mId = "253412";
+    private String mId;
     private ProgressBar mLoading;
     private String mTrailerResults;
     private TextView mError;
-    private TrailerData mTrailerDataList;
-
+    private Button mReview;
+    private ArrayList<TrailerData> mTrailerDataList;
+    private ToggleButton mFavorites;
+    public MovieData mMovie;
+    static final String ON_SAVE_INSTANCE_STATE = "Movie";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+
+            mMovie = (MovieData) getIntent().getSerializableExtra("movieInfo");
+
+
         mTitle = (TextView) findViewById(R.id.tv_movie_title);
         mRating = (TextView) findViewById(R.id.tv_rating);
         mPlot = (TextView) findViewById(R.id.tv_plot);
@@ -50,21 +62,36 @@ public class DetailActivity extends AppCompatActivity {
         mPoster = (ImageView) findViewById(R.id.iv_poster);
         mLoading =(ProgressBar) findViewById(R.id.pb_trailer_loading);
         mError = (TextView) findViewById(R.id.tv_trailer_error);
+        mReview = (Button) findViewById(R.id.bt_reviews);
+        mFavorites = (ToggleButton) findViewById(R.id.tb_fave);
+        mReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = DetailActivity.this;
+
+                Intent intent = new Intent(context, ReviewActivity.class);
+                intent.putExtra("movieInfo", mMovie);
+                //intent.putExtra("adapterPosition", adapterPosition);
+                startActivityForResult(intent, 1);
+            }
+        });
 
 
-        MovieData movie = (MovieData) getIntent().getSerializableExtra("movieInfo");
 
-        Picasso.get().load("http://image.tmdb.org/t/p/w185/" + movie.getPath()).into(mPoster);
-        mTitle.setText(movie.getName().toString());
-        mRating.setText(movie.getRating().toString());
-        mPlot.setText(movie.getPlot().toString());
-        mRelease.setText(movie.getRelease().toString());
-        mId = movie.getId().toString();
+
+
+
+        Picasso.get().load("http://image.tmdb.org/t/p/w185/" + mMovie.getPath()).into(mPoster);
+        mTitle.setText(mMovie.getName().toString());
+        mRating.setText(mMovie.getRating().toString());
+        mPlot.setText(mMovie.getPlot().toString());
+        mRelease.setText(mMovie.getRelease().toString());
+        mId = mMovie.getId().toString();
 
 
 
         mTrailer=(RecyclerView)findViewById(R.id.rv_trailers);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL,false );
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL,false );
         mTrailer.setLayoutManager(layoutManager);
 
         mTrailer.setHasFixedSize(true);
@@ -73,6 +100,16 @@ public class DetailActivity extends AppCompatActivity {
         makeTrailerSearch();
 
         }
+        public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode ==1){
+            if(resultCode == RESULT_OK){
+                mMovie = (MovieData) data.getSerializableExtra("movieInfo");
+            }
+
+        }
+        }
+
 
     private void makeTrailerSearch(){
         //SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
@@ -121,7 +158,7 @@ public class TrailerQueryTask extends AsyncTask<URL, Void, String> {
             mError.setVisibility(View.INVISIBLE);
             mTrailer.setVisibility(View.VISIBLE);
 
-            //mAdapter.setmPosterPath(mMovieDataList);
+            mAdapter.setmTrailerPath(mTrailerDataList);
             mAdapter.notifyDataSetChanged();
 
         }}

@@ -2,4 +2,5 @@
 <resources>
 
     <dimen name="error_message">32dp</dimen>
+    <dimen name="trailer_size">24sp</dimen>
 </resources>

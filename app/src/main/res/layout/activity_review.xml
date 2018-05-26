@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+
+        android:id = "@+id/rv_reviews"/>
+
+    <ProgressBar
+        android:id="@+id/pb_rev_loading"
+        android:layout_height="42dp"
+        android:layout_width="42dp"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/error_message"
+        android:text="@string/error_message"
+        android:id="@+id/tv_rev_error_message"
+        />
+
+
+</FrameLayout>
