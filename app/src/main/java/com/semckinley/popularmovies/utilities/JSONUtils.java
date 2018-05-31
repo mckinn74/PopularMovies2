@@ -1,6 +1,7 @@
 package com.semckinley.popularmovies.utilities;
 
 import com.semckinley.popularmovies.sampledata.MovieData;
+import com.semckinley.popularmovies.sampledata.ReviewData;
 import com.semckinley.popularmovies.sampledata.TrailerData;
 
 import org.json.JSONArray;
@@ -68,8 +69,6 @@ public class JSONUtils {
 
                 //String path;
                 JSONObject trailerInfo = trailerList.getJSONObject(i);
-
-                //path=trailerInfo.getString(MDB_PATH);
                 trailerData.setSite(trailerInfo.getString(TDB_SITE));
                 trailerData.setType(trailerInfo.getString(TDB_TYPE));
                 trailerData.setName(trailerInfo.getString(TDB_NAME));
@@ -84,5 +83,35 @@ public class JSONUtils {
         }
 
         return mTrailerList;
+    }
+
+    public static ArrayList<ReviewData> parseReviewJSON(String jsonReview){
+        ArrayList<ReviewData> mReviewList = new ArrayList<>();
+        final String RDB_RESULTS = "results";
+        final String RDB_AUTHOR = "author";
+        final String RDB_CONTENT = "content";
+        final String RDB_ID = "id";
+        final String RDB_URL = "url";
+
+
+        try {
+            JSONObject revJSON = new JSONObject(jsonReview);
+            JSONArray reviewList = revJSON.getJSONArray(RDB_RESULTS);
+
+            for(int j = 0; j<reviewList.length(); j++) {
+                ReviewData reviewData = new ReviewData();
+                JSONObject reviewInfo = reviewList.getJSONObject(j);
+                reviewData.setAuthor(reviewInfo.getString(RDB_AUTHOR));
+                reviewData.setContent(reviewInfo.getString(RDB_CONTENT));
+                reviewData.setId(reviewInfo.getString(RDB_ID));
+                reviewData.setUrl(reviewInfo.getString(RDB_URL));
+                mReviewList.add(reviewData);
+            }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+        return mReviewList;
     }
 }
