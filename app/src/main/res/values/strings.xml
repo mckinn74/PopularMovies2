@@ -18,4 +18,5 @@
     <string name="favorite">Favorite</string>
     <string name="add_fave">Add Fave</string>
     <string name="review_activity">Reviews</string>
+    <string name = "no_review">No Reviews Found</string>
 </resources>

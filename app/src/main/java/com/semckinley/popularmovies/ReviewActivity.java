@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -36,6 +37,17 @@ public class ReviewActivity extends AppCompatActivity {
         String id = mMovie.getId().toString();
         mError = (TextView) findViewById(R.id.tv_rev_error_message);
         mLoading = (ProgressBar) findViewById(R.id.pb_rev_loading);
+        mReview=(RecyclerView)findViewById(R.id.rv_reviews);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1, GridLayoutManager.VERTICAL,false );
+        mReview.setLayoutManager(layoutManager);
+
+        mReview.setHasFixedSize(true);
+        mAdapter = new ReviewAdapter();
+        mReview.setAdapter(mAdapter);
+
+
+        makeReviewSearch(id);
+
 
     }
 
@@ -43,7 +55,16 @@ public class ReviewActivity extends AppCompatActivity {
     public void onBackPressed(){
         //TODO Fix the back button so app doesn't crash
     }
+    private void makeReviewSearch(String id){
+        //SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
+        //boolean popular = sharedPreferences.getBoolean("search_option", false);
+        URL movieSearchUrl = MovieDBUtils.reviewBuildUrl(id);
+        new ReviewActivity.ReviewQueryTask().execute(movieSearchUrl);
 
+
+
+
+    }
 
 public class ReviewQueryTask extends AsyncTask<URL, Void, String> {
 
@@ -77,11 +98,11 @@ public class ReviewQueryTask extends AsyncTask<URL, Void, String> {
         } else{
 
             mReviewDataList = JSONUtils.parseReviewJSON(mReviewResults);
-            mError.setText(mReviewDataList.get(0).getContent().toString());
+            mError.setVisibility(View.INVISIBLE);
             mReview.setVisibility(View.VISIBLE);
 
-            //mAdapter.setmTrailerPath(mReviewDataList);
-            //mAdapter.notifyDataSetChanged();
+            mAdapter.setmReviewList(mReviewDataList);
+            mAdapter.notifyDataSetChanged();
 
         }}
 }}

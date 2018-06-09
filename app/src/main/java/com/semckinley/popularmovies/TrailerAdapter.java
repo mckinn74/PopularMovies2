@@ -39,7 +39,7 @@ import java.util.ArrayList;
     public class TrailerAdapter extends RecyclerView.Adapter<com.semckinley.popularmovies.TrailerAdapter.TrailerViewHolder> {
         private int mNumberTrailers;
         private String [] mTrailerPath;
-        //private int movieCount;
+
         static Context mContext;
        ArrayList<TrailerData> mTrailerList;
 

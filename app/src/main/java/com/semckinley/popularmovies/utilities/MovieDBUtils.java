@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class MovieDBUtils {
 
-     final static String API_KEY = "api_key=2b9f9bc0639a1020bda5e4042f38f598"; //add requested API_KEY from themovieDB here
+     final static String API_KEY = "api_key="; //add requested API_KEY from themovieDB here
     final static String POPULAR = "popular?";
     final static String HIGHEST_RATED = "top_rated?";
     final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
