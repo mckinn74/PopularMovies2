@@ -17,6 +17,7 @@ public class MovieFavoriteContract {
         public static final String COLUMN_POSTER_PATH="poster_path";
         public static final String COLUMN_SYNOPSIS="movie_plot";
         public static final String COLUMN_RELEASE="release_date";
+        public static final String COLUMN_MOVIE_ID ="id";
 
     }
 }

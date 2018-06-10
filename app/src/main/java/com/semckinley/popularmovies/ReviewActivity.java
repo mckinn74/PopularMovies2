@@ -1,5 +1,6 @@
 package com.semckinley.popularmovies;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -28,12 +29,13 @@ public class ReviewActivity extends AppCompatActivity {
     private ProgressBar mLoading;
     private String mReviewResults;
     private ArrayList<ReviewData> mReviewDataList;
+    private MovieData mMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
-        MovieData mMovie = (MovieData) getIntent().getSerializableExtra("movieInfo");
+        mMovie = (MovieData) getIntent().getSerializableExtra("movieInfo");
         String id = mMovie.getId().toString();
         mError = (TextView) findViewById(R.id.tv_rev_error_message);
         mLoading = (ProgressBar) findViewById(R.id.pb_rev_loading);
@@ -53,7 +55,10 @@ public class ReviewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        //TODO Fix the back button so app doesn't crash
+        Intent intent = new Intent();
+        intent.putExtra("movieInfo", mMovie);
+       setResult(Activity.RESULT_OK, intent);
+       finish();//TODO Fix the back button so app doesn't crash
     }
     private void makeReviewSearch(String id){
         //SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
