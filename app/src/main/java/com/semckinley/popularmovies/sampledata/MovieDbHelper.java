@@ -30,7 +30,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         //Here I make the string that will create the database that will house the student information
         final String SQL_CREATE_STUDENT_TABLE =
                 "CREATE TABLE " + MovieFavoriteContract.MovieFavoriteList.TABLE_NAME + " (" +
-                        MovieFavoriteContract.MovieFavoriteList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        MovieFavoriteContract.MovieFavoriteList._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE + " TEXT NOT NULL, " +
                         MovieFavoriteContract.MovieFavoriteList.COLUMN_RATING + " INTEGER NOT NULL, "
                         + MovieFavoriteContract.MovieFavoriteList.COLUMN_SYNOPSIS + " TEXT NOT NULL, " +

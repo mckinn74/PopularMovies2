@@ -64,11 +64,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mPreference = getDefaultSharedPreferences(this);
         mPreference.registerOnSharedPreferenceChangeListener(this);
 
-        if ( Integer.parseInt(mPreference.getString("search_option", "3"))== FAVORITELIST){
-            makeMovieSQLite();
 
-        }
-        else{makeMovieDBSearch();}
+        makeMovieDBSearch();
 
 
     }
@@ -83,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         int count = cursor.getCount();
         if (cursor != null){
             mErrorMessage.setVisibility(View.INVISIBLE);
+            mLoading.setVisibility(View.VISIBLE);
             for (int i = 0; i < cursor.getCount(); i++){
                 cursor.moveToPosition(i);
                 movie.setName(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE)));
@@ -95,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
             mAdapter.setmPosterPath(movieData);
             mAdapter.notifyDataSetChanged();
+            mLoading.setVisibility(View.INVISIBLE);
         }
         else{
             mErrorMessage.setVisibility(View.VISIBLE);
@@ -128,10 +127,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
 
     private void makeMovieDBSearch(){
-         mPreference = getDefaultSharedPreferences(this);
+        if ( Integer.parseInt(mPreference.getString("search_option", "3"))== FAVORITELIST){
+            makeMovieSQLite();
+
+        }
+       else{ mPreference = getDefaultSharedPreferences(this);
         String popular = mPreference.getString("search_option", "1");
         URL movieSearchUrl = MovieDBUtils.buildUrl(popular);
-        new MovieDBQueryTask().execute(movieSearchUrl);
+        new MovieDBQueryTask().execute(movieSearchUrl);}
        mPreference.registerOnSharedPreferenceChangeListener(this);
 
 
