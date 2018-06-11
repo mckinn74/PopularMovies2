@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -53,13 +54,15 @@ public class ReviewActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed(){
-        Intent intent = new Intent();
-        intent.putExtra("movieInfo", mMovie);
-       setResult(Activity.RESULT_OK, intent);
-       finish();//TODO Fix the back button so app doesn't crash
-    }
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return(super.onOptionsItemSelected(item));
+   }
     private void makeReviewSearch(String id){
         //SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
         //boolean popular = sharedPreferences.getBoolean("search_option", false);

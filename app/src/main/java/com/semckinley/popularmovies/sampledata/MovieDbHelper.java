@@ -16,7 +16,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
      */
 
     private static final String DATABASE_NAME = "movieinfo.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     //initializing database version for future incrementation to upgrade database after changes
     //Create the constructor

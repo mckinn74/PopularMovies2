@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/root_title">
-    <CheckBoxPreference
-        android:defaultValue="true"
+    <ListPreference
+        android:defaultValue="1"
         android:key="@string/search_option"
-        android:summaryOff="popular"
-        android:summaryOn="highest_rated"
-        android:title="@string/Search_highest"
+        android:title="Select Search Option"
+        android:entries="@array/search_list"
+        android:entryValues="@array/search_values"
         />
 
 </PreferenceScreen>

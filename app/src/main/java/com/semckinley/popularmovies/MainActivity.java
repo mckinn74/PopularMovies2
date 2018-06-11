@@ -2,6 +2,8 @@ package com.semckinley.popularmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.semckinley.popularmovies.sampledata.MovieDbHelper;
+import com.semckinley.popularmovies.sampledata.MovieFavoriteContract;
 import com.semckinley.popularmovies.utilities.JSONUtils;
 import com.semckinley.popularmovies.utilities.MovieDBUtils;
 import com.semckinley.popularmovies.sampledata.MovieData;
@@ -34,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         private ProgressBar mLoading;
         public String [] mPosterPath = new String[20];
         private TextView mErrorMessage;
+        SharedPreferences mPreference;
+        private int FAVORITELIST = 3;
 
         public ArrayList<MovieData> mMovieDataList;
     @Override
@@ -55,12 +61,47 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mAdapter = new MovieAdapter(20);
 
         mMovieList.setAdapter(mAdapter);
+        mPreference = getDefaultSharedPreferences(this);
+        mPreference.registerOnSharedPreferenceChangeListener(this);
 
+        if ( Integer.parseInt(mPreference.getString("search_option", "3"))== FAVORITELIST){
+            makeMovieSQLite();
 
-        makeMovieDBSearch();
+        }
+        else{makeMovieDBSearch();}
 
 
     }
+
+    private void makeMovieSQLite() {
+        MovieDbHelper movieDbHelper = new MovieDbHelper(this);
+        SQLiteDatabase mDb = movieDbHelper.getReadableDatabase();
+        MovieData movie = new MovieData();
+        ArrayList<MovieData> movieData = new ArrayList<>();
+        Cursor cursor = mDb.query(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, null, null, null, null, null,
+                null);
+        int count = cursor.getCount();
+        if (cursor != null){
+            mErrorMessage.setVisibility(View.INVISIBLE);
+            for (int i = 0; i < cursor.getCount(); i++){
+                cursor.moveToPosition(i);
+                movie.setName(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE)));
+                movie.setRating(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RATING)));
+                movie.setPlot(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_SYNOPSIS)));
+                movie.setRelease(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RELEASE)));
+                movie.setPath(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_POSTER_PATH)));
+                movie.setId(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_MOVIE_ID)));
+                movieData.add(movie);
+            }
+            mAdapter.setmPosterPath(movieData);
+            mAdapter.notifyDataSetChanged();
+        }
+        else{
+            mErrorMessage.setVisibility(View.VISIBLE);
+        }
+        cursor.close();
+    }
+
     @Override
     protected void onDestroy(){
         super.onDestroy();
@@ -87,11 +128,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
 
     private void makeMovieDBSearch(){
-        SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
-        boolean popular = sharedPreferences.getBoolean("search_option", false);
+         mPreference = getDefaultSharedPreferences(this);
+        String popular = mPreference.getString("search_option", "1");
         URL movieSearchUrl = MovieDBUtils.buildUrl(popular);
         new MovieDBQueryTask().execute(movieSearchUrl);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+       mPreference.registerOnSharedPreferenceChangeListener(this);
 
 
 

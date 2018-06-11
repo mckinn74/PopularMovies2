@@ -21,9 +21,11 @@ public class MovieDBUtils {
     final static String VIDEOS="/videos?";
     final static String REVIEWS ="/reviews?";
 
-    public static URL buildUrl (boolean rating){
+    public static URL buildUrl (String search){
+        //TODO switch from boolean to do highest or popular to switch case for those OR favorite
+        int sSearch = Integer.parseInt(search);
         Uri builtUri;
-        if(rating==true){
+        if(sSearch==1){
          builtUri = Uri.parse(MOVIE_DB_BASE_URL + HIGHEST_RATED + API_KEY +END_STRING).buildUpon()
                 .build();}
                else{ builtUri = Uri.parse(MOVIE_DB_BASE_URL + POPULAR + API_KEY +END_STRING).buildUpon()
