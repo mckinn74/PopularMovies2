@@ -102,9 +102,35 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     @Override
+    protected void onResume(){
+        super.onResume();
+        mMovieList.removeAllViews();
+
+    }
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        mMovieList.removeAllViews();
+        mMovieList.removeAllViewsInLayout();
+
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mMovieList.removeAllViews();
+
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        mMovieList.removeAllViews();
+
+    }
+    @Override
     protected void onDestroy(){
         super.onDestroy();
-
+        mMovieList.removeAllViews();
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
     @Override

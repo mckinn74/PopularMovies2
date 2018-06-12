@@ -84,7 +84,13 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         mFavorites = (ToggleButton) findViewById(R.id.tb_fave);
-
+ /*String [] arg1 = {mMovie.getId().toString()};
+        Cursor cursor = mDb.query(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, arg1,MovieFavoriteContract.MovieFavoriteList.COLUMN_MOVIE_ID, null, null, null, null, null);
+        int cursorCount = cursor.getCount();
+        if (cursorCount > 0){
+            mFavorites.setChecked(true);
+        }
+        cursor.close();*/
         mFavorites.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 
 
@@ -106,13 +112,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
-        /*String [] arg1 = {mMovie.getId().toString()};
-        Cursor cursor = mDb.query(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, arg1,MovieFavoriteContract.MovieFavoriteList.COLUMN_MOVIE_ID, null, null, null, null, null);
-        int cursorCount = cursor.getCount();
-        if (cursorCount > 0){
-            mFavorites.setChecked(true);
-        }
-        cursor.close();*/
+
 
 
         Picasso.get().load("http://image.tmdb.org/t/p/w185/" + mMovie.getPath()).into(mPoster);
