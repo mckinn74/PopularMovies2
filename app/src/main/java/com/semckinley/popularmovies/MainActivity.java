@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -73,7 +74,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void makeMovieSQLite() {
         MovieDbHelper movieDbHelper = new MovieDbHelper(this);
         SQLiteDatabase mDb = movieDbHelper.getReadableDatabase();
-        MovieData movie = new MovieData();
+        mMovieDataList = null;
+        mAdapter.setmPosterPath(mMovieDataList);
+        mAdapter.notifyDataSetChanged();
         ArrayList<MovieData> movieData = new ArrayList<>();
         Cursor cursor = mDb.query(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, null, null, null, null, null,
                 null);
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             mLoading.setVisibility(View.VISIBLE);
             for (int i = 0; i < cursor.getCount(); i++){
                 cursor.moveToPosition(i);
+                MovieData movie = new MovieData();
                 movie.setName(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE)));
                 movie.setRating(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RATING)));
                 movie.setPlot(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_SYNOPSIS)));
@@ -104,35 +108,42 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onResume(){
         super.onResume();
-        mMovieList.removeAllViews();
+        mMovieList.removeAllViewsInLayout();
+        mAdapter.notifyItemRangeRemoved(0,20);
+
+
+       Log.d("onResume", "onResume Called");
 
     }
     @Override
     protected void onRestart(){
         super.onRestart();
-        mMovieList.removeAllViews();
         mMovieList.removeAllViewsInLayout();
+        mAdapter.notifyItemRangeRemoved(0,20);
 
     }
     @Override
     protected void onPause(){
         super.onPause();
-        mMovieList.removeAllViews();
-
+        mMovieList.removeAllViewsInLayout();
+        mAdapter.notifyItemRangeRemoved(0,20);
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        mMovieList.removeAllViews();
-
+        mMovieList.removeAllViewsInLayout();
+        mAdapter.notifyItemRangeRemoved(0,20);
     }
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        mMovieList.removeAllViews();
+        mAdapter.notifyItemRangeRemoved(0, mPosterPath.length);
+        mMovieList.removeAllViewsInLayout();
+        mAdapter.notifyItemRangeRemoved(0,20);
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
@@ -142,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
+        mMovieList.removeAllViews();
         if(id==R.id.search_settings){
             Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(startSettingsActivity);
@@ -154,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void makeMovieDBSearch(){
         if ( Integer.parseInt(mPreference.getString("search_option", "3"))== FAVORITELIST){
+
+            mMovieList.removeAllViewsInLayout();
             makeMovieSQLite();
 
         }

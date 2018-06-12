@@ -48,6 +48,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
    @Override
    public void onBindViewHolder(MovieViewHolder holder, int position){
        holder.bind(position);
+
        Log.d("onBindViewHolder", "onBindViewHolder Started");
        if(mPosterPath == null){
            Log.d("mPosterPath", "PosterPath Array is Null");
@@ -98,8 +99,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             }
         }
         public void setmPosterPath(ArrayList<MovieData> movieDataList){
+        if (movieDataList == null){
+            mMovieDataList = null;
+
+        }
+        else{
        this.mMovieDataList = movieDataList;
+
             for (int j = 0; j < mMovieDataList.size(); j++){
                 mPosterPath[j]= mMovieDataList.get(j).getPath();
             }}
-}
+
+
+
+    }}
+
