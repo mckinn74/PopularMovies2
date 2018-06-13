@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL,false );
         mMovieList.setLayoutManager(layoutManager);
 
-        mMovieList.setHasFixedSize(true);
+        mMovieList.setHasFixedSize(false);
         mAdapter = new MovieAdapter(20);
 
         mMovieList.setAdapter(mAdapter);
@@ -108,8 +108,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onResume(){
         super.onResume();
-        mMovieList.removeAllViewsInLayout();
+        mMovieList.removeAllViews();
         mAdapter.notifyItemRangeRemoved(0,20);
+        //mPreference.registerOnSharedPreferenceChangeListener(this);
 
 
        Log.d("onResume", "onResume Called");
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onPause();
         mMovieList.removeAllViewsInLayout();
         mAdapter.notifyItemRangeRemoved(0,20);
+       // mPreference.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

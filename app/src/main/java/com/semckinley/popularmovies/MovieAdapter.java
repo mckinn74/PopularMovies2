@@ -59,12 +59,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
        }
        else{
 
-           String path = mPosterPath[position];
+           String path = mMovieDataList.get(position).getPath();
+
            Picasso.get().load("http://image.tmdb.org/t/p/w185/" + path).into(holder.listMovieNumberView);
        }
    }
     public int getItemCount(){
-        if (mPosterPath != null){return mPosterPath.length;}
+        if (mMovieDataList != null){return mMovieDataList.size();}
 
        return mNumberMovies;
     }
