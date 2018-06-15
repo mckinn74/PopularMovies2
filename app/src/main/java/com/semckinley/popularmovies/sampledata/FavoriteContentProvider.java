@@ -51,6 +51,15 @@ public class FavoriteContentProvider extends ContentProvider {
                         selectionArgs, null, null,
                         sortOrder);
                 break;
+            case FAVORITES_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                String mSelection = "_id=?";
+                String [] mSelectionArgs = new String[]{id};
+                cursor = db.query(TABLE_NAME,
+                        projection,
+                        mSelection,
+                        mSelectionArgs, null, null,
+                        sortOrder);
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -88,7 +97,32 @@ public class FavoriteContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+
+         final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+
+        int moviesDeleted; // starts as 0
+
+
+        switch (match) {
+             case FAVORITES_WITH_ID:
+
+                String id = uri.getPathSegments().get(1);
+                 moviesDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+         if (moviesDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of tasks deleted
+        return moviesDeleted;
+
+
     }
 
     @Override

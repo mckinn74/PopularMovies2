@@ -50,7 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
        holder.bind(position);
 
        Log.d("onBindViewHolder", "onBindViewHolder Started");
-       if(mPosterPath == null){
+       if(mMovieDataList == null){
            Log.d("mPosterPath", "PosterPath Array is Null");
 
                String path = "/Dvpvklr.png";
