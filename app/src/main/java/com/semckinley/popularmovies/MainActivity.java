@@ -1,10 +1,14 @@
 package com.semckinley.popularmovies;
 
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -78,9 +82,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mAdapter.setmPosterPath(mMovieDataList);
         mAdapter.notifyDataSetChanged();
         ArrayList<MovieData> movieData = new ArrayList<>();
-        Cursor cursor = mDb.query(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, null, null, null, null, null,
-                null);
-        int count = cursor.getCount();
+        Context context = this;
+        Cursor cursor = new FavoriteQueryTask(context).loadInBackground();
+        //mDb.query(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, null, null, null, null, null,
+          //      null);
+      
         if (cursor != null){
             mErrorMessage.setVisibility(View.INVISIBLE);
             mLoading.setVisibility(View.VISIBLE);
@@ -230,3 +236,4 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }}
     }
 }
+

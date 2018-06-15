@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Movie;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.semckinley.popularmovies.sampledata.MovieData;
@@ -104,11 +106,16 @@ public class DetailActivity extends AppCompatActivity {
                     cv.put(MovieFavoriteContract.MovieFavoriteList.COLUMN_SYNOPSIS, mMovie.getPlot().toString());
                     cv.put(MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE, mMovie.getName().toString());
                     cv.put(MovieFavoriteContract.MovieFavoriteList.COLUMN_MOVIE_ID, mMovie.getId().toString());
-                    mDb.insert(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, null, cv);
+                    //mDb.insert(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, null, cv);
+                    Uri uri = getContentResolver().insert(MovieFavoriteContract.MovieFavoriteList.CONTENT_URI, cv);
+                    if(uri != null){
+                        Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                    }
                 }
                 else{
                     String [] args = {mMovie.getName().toString()};
-                    mDb.delete(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE + "=?", args);
+                    //mDb.delete(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE + "=?", args);
+                   // Uri uri = getContentResolver().delete(uri)
                 }
             }
         });
