@@ -114,9 +114,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onResume(){
         super.onResume();
-        mMovieList.removeAllViews();
-        mAdapter.notifyItemRangeRemoved(0,20);
-        //mPreference.registerOnSharedPreferenceChangeListener(this);
+        mAdapter.notifyDataSetChanged();
 
 
        Log.d("onResume", "onResume Called");
@@ -125,8 +123,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onRestart(){
         super.onRestart();
-        mMovieList.removeAllViewsInLayout();
-        mAdapter.notifyItemRangeRemoved(0,20);
+        mAdapter.notifyDataSetChanged();
 
     }
     @Override

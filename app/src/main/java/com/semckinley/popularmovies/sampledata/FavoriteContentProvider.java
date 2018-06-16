@@ -52,8 +52,8 @@ public class FavoriteContentProvider extends ContentProvider {
                         sortOrder);
                 break;
             case FAVORITES_WITH_ID:
-                String id = uri.getPathSegments().get(1);
-                String mSelection = "_id=?";
+                String id = uri.getLastPathSegment();
+                String mSelection = "id_number=?";
                 String [] mSelectionArgs = new String[]{id};
                 cursor = db.query(TABLE_NAME, projection, mSelection, mSelectionArgs, null, null, sortOrder);
                 break;
@@ -106,7 +106,7 @@ public class FavoriteContentProvider extends ContentProvider {
              case FAVORITES_WITH_ID:
 
                 String id = uri.getPathSegments().get(1);
-                 moviesDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                 moviesDeleted = db.delete(TABLE_NAME, "id_number=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

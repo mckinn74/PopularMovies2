@@ -90,8 +90,8 @@ public class DetailActivity extends AppCompatActivity {
         String args = mMovie.getId().toString();
         Uri uri = MovieFavoriteContract.MovieFavoriteList.CONTENT_URI;
         uri= uri.buildUpon().appendPath(args).build();
-
-            mFavorites.setChecked(new SingleQueryTask().doInBackground(uri));
+        boolean isFavorite = new SingleQueryTask().doInBackground(uri);
+            mFavorites.setChecked(isFavorite);
 
 
 
@@ -119,6 +119,7 @@ public class DetailActivity extends AppCompatActivity {
                    Uri uri = MovieFavoriteContract.MovieFavoriteList.CONTENT_URI;
                     uri= uri.buildUpon().appendPath(args).build();
                     getContentResolver().delete(uri, null, null);
+                    mAdapter.notifyDataSetChanged();
 
                 }
             }
@@ -218,11 +219,12 @@ public class SingleQueryTask extends AsyncTask<Uri, Void, Boolean>{
     @Override
     protected Boolean doInBackground(Uri... uris) {
         Uri uri = uris[0];
-        if (getContentResolver().query(uri,
+        Cursor checkCursor = getContentResolver().query(uri,
                 null,
                 null,
                 null,
-                null) != null) {
+                null);
+        if (checkCursor.getCount() > 0) {
             return true;
         }
         else {return false;}
