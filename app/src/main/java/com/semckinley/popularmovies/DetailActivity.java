@@ -31,6 +31,7 @@ import com.semckinley.popularmovies.sampledata.MovieFavoriteContract;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -86,6 +87,14 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         mFavorites = (ToggleButton) findViewById(R.id.tb_fave);
+        String args = mMovie.getId().toString();
+        Uri uri = MovieFavoriteContract.MovieFavoriteList.CONTENT_URI;
+        uri= uri.buildUpon().appendPath(args).build();
+
+            mFavorites.setChecked(new SingleQueryTask().doInBackground(uri));
+
+
+
 
         mFavorites.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 
@@ -100,19 +109,17 @@ public class DetailActivity extends AppCompatActivity {
                     cv.put(MovieFavoriteContract.MovieFavoriteList.COLUMN_SYNOPSIS, mMovie.getPlot().toString());
                     cv.put(MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE, mMovie.getName().toString());
                     cv.put(MovieFavoriteContract.MovieFavoriteList.COLUMN_MOVIE_ID, mMovie.getId().toString());
-                    //mDb.insert(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, null, cv);
-                    Uri uri = getContentResolver().insert(MovieFavoriteContract.MovieFavoriteList.CONTENT_URI, cv);
+                     Uri uri = getContentResolver().insert(MovieFavoriteContract.MovieFavoriteList.CONTENT_URI, cv);
                     if(uri != null){
                         Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
                     }
                 }
                 else{
-                    String args = mMovie.getId().toString();
-                    //mDb.delete(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE + "=?", args);
-                    Uri uri = MovieFavoriteContract.MovieFavoriteList.CONTENT_URI;
+                   String args = mMovie.getId().toString();
+                   Uri uri = MovieFavoriteContract.MovieFavoriteList.CONTENT_URI;
                     uri= uri.buildUpon().appendPath(args).build();
                     getContentResolver().delete(uri, null, null);
-                    mAdapter.notifyDataSetChanged();
+
                 }
             }
         });
@@ -201,7 +208,27 @@ public class TrailerQueryTask extends AsyncTask<URL, Void, String> {
             mAdapter.notifyDataSetChanged();
 
         }}
-}}
+}
+
+
+public class SingleQueryTask extends AsyncTask<Uri, Void, Boolean>{
+
+
+
+    @Override
+    protected Boolean doInBackground(Uri... uris) {
+        Uri uri = uris[0];
+        if (getContentResolver().query(uri,
+                null,
+                null,
+                null,
+                null) != null) {
+            return true;
+        }
+        else {return false;}
+    }
+}
+}
 
 
 
