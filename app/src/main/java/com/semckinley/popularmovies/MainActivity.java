@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         GridLayoutManager layoutManager;
         public ArrayList<MovieData> mMovieDataList;
         private Parcelable mListState;
+        Cursor mCursor;
+        Context mContext;
+        final String STATE = "ListState";
 
 
     @Override
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mPreference = getDefaultSharedPreferences(this);
         mPreference.registerOnSharedPreferenceChangeListener(this);
         if(savedInstanceState != null) {
-            mListState = savedInstanceState.getParcelable("ListState");
+            mListState = savedInstanceState.getParcelable(STATE);
         }
         makeMovieDBSearch();
 
@@ -88,23 +91,23 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mAdapter.setmPosterPath(mMovieDataList);
         mAdapter.notifyDataSetChanged();
         ArrayList<MovieData> movieData = new ArrayList<>();
-        Context context = this;
-        Cursor cursor = new FavoriteQueryTask(context).loadInBackground();
+        mContext = this;
+        mCursor = new FavoriteQueryTask(mContext).loadInBackground();
         //mDb.query(MovieFavoriteContract.MovieFavoriteList.TABLE_NAME, null, null, null, null, null,
           //      null);
       
-        if (cursor != null){
+        if (mCursor != null){
             mErrorMessage.setVisibility(View.INVISIBLE);
             mLoading.setVisibility(View.VISIBLE);
-            for (int i = 0; i < cursor.getCount(); i++){
-                cursor.moveToPosition(i);
+            for (int i = 0; i < mCursor.getCount(); i++){
+                mCursor.moveToPosition(i);
                 MovieData movie = new MovieData();
-                movie.setName(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE)));
-                movie.setRating(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RATING)));
-                movie.setPlot(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_SYNOPSIS)));
-                movie.setRelease(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RELEASE)));
-                movie.setPath(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_POSTER_PATH)));
-                movie.setId(cursor.getString(cursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_MOVIE_ID)));
+                movie.setName(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE)));
+                movie.setRating(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RATING)));
+                movie.setPlot(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_SYNOPSIS)));
+                movie.setRelease(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RELEASE)));
+                movie.setPath(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_POSTER_PATH)));
+                movie.setId(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_MOVIE_ID)));
                 movieData.add(movie);
             }
             mAdapter.setmPosterPath(movieData);
@@ -114,21 +117,46 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         else{
             mErrorMessage.setVisibility(View.VISIBLE);
         }
-        cursor.close();
+        mCursor.close();
     }
     @Override
     protected void onSaveInstanceState(Bundle outState){
 
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ListState", mMovieList.getLayoutManager().onSaveInstanceState());
+        outState.putParcelable("ListState", mListState);
 
     }
     @Override
     protected void onResume(){
         super.onResume();
         mMovieList.getLayoutManager().onRestoreInstanceState(mListState);
+        if ( Integer.parseInt(mPreference.getString("search_option", "3"))== FAVORITELIST)
+        { mCursor = new FavoriteQueryTask(mContext).loadInBackground();
+            ArrayList<MovieData> movieData = new ArrayList<>();
+            if (mCursor != null){
+                mErrorMessage.setVisibility(View.INVISIBLE);
+                mLoading.setVisibility(View.VISIBLE);
+                for (int i = 0; i < mCursor.getCount(); i++){
+                    mCursor.moveToPosition(i);
+                    MovieData movie = new MovieData();
+                    movie.setName(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_TITLE)));
+                    movie.setRating(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RATING)));
+                    movie.setPlot(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_SYNOPSIS)));
+                    movie.setRelease(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_RELEASE)));
+                    movie.setPath(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_POSTER_PATH)));
+                    movie.setId(mCursor.getString(mCursor.getColumnIndex(MovieFavoriteContract.MovieFavoriteList.COLUMN_MOVIE_ID)));
+                    movieData.add(movie);
+                }
+                mAdapter.setmPosterPath(movieData);
+                mAdapter.notifyDataSetChanged();
+                mLoading.setVisibility(View.INVISIBLE);
+            }
+            else{
+                mErrorMessage.setVisibility(View.VISIBLE);
+            }
 
-        mAdapter.notifyDataSetChanged();
+
+       mCursor.close();}
 
 
        Log.d("onResume", "onResume Called");
@@ -143,10 +171,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onPause(){
         super.onPause();
+        mListState = mMovieList.getLayoutManager().onSaveInstanceState();
 
-        mMovieList.removeAllViewsInLayout();
-        mAdapter.notifyItemRangeRemoved(0,20);
-       // mPreference.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -163,7 +189,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mAdapter.notifyItemRangeRemoved(0,20);
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
     }
-
+    protected void onRestoreInstanceState(Bundle state){
+        super.onRestoreInstanceState(state);
+        if(state != null){
+            mListState = state.getParcelable(STATE);
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();

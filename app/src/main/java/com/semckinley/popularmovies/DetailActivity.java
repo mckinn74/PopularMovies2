@@ -118,8 +118,7 @@ public class DetailActivity extends AppCompatActivity {
                    String args = mMovie.getId().toString();
                    Uri uri = MovieFavoriteContract.MovieFavoriteList.CONTENT_URI;
                     uri= uri.buildUpon().appendPath(args).build();
-                    getContentResolver().delete(uri, null, null);
-                    mAdapter.notifyDataSetChanged();
+                     getContentResolver().delete(uri, null, null);
 
                 }
             }
