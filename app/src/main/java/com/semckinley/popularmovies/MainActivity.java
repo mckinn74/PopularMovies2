@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -45,8 +47,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         private TextView mErrorMessage;
         SharedPreferences mPreference;
         private int FAVORITELIST = 3;
-
+        GridLayoutManager layoutManager;
         public ArrayList<MovieData> mMovieDataList;
+        private Parcelable mListState;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mLoading = (ProgressBar) findViewById(R.id.pb_loading);
 
         mMovieList = (RecyclerView) findViewById(R.id.rv_movies);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL,false );
+         layoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL,false );
         mMovieList.setLayoutManager(layoutManager);
 
         mMovieList.setHasFixedSize(false);
@@ -68,8 +73,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mMovieList.setAdapter(mAdapter);
         mPreference = getDefaultSharedPreferences(this);
         mPreference.registerOnSharedPreferenceChangeListener(this);
-
-
+        if(savedInstanceState != null) {
+            mListState = savedInstanceState.getParcelable("ListState");
+        }
         makeMovieDBSearch();
 
 
@@ -110,10 +116,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
         cursor.close();
     }
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
 
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("ListState", mMovieList.getLayoutManager().onSaveInstanceState());
+
+    }
     @Override
     protected void onResume(){
         super.onResume();
+        mMovieList.getLayoutManager().onRestoreInstanceState(mListState);
+
         mAdapter.notifyDataSetChanged();
 
 
@@ -129,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onPause(){
         super.onPause();
+
         mMovieList.removeAllViewsInLayout();
         mAdapter.notifyItemRangeRemoved(0,20);
        // mPreference.unregisterOnSharedPreferenceChangeListener(this);
